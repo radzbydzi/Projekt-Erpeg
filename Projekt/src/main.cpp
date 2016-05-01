@@ -1,9 +1,10 @@
-#include "game.h"
+#include "Game.h"
+
 sf::Mutex mutex;
 
 int main()
 {
-    GameObject* game = new GameObject();
+    Game* game = new Game();
     game->start();
     delete game;
     return 0;

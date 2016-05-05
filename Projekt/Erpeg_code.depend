@@ -771,13 +771,62 @@
 	<SFML/Graphics.hpp>
 	<iostream>
 
-1462128512 source:d:\projekterpeg\projekt-erpeg\projekt\src\game.cpp
+1462489384 source:d:\projekterpeg\projekt-erpeg\projekt\src\game.cpp
 	"Game.h"
 
-1462128648 d:\projekterpeg\projekt-erpeg\projekt\include\game.h
+1462479815 d:\projekterpeg\projekt-erpeg\projekt\include\game.h
 	<SFML/Graphics.hpp>
 	<iostream>
+	<deque>
+	<string>
+	"ThingsToDo.h"
+	"Map.h"
 
-1462128686 source:d:\projekterpeg\projekt-erpeg\projekt\src\main.cpp
+1462300973 source:d:\projekterpeg\projekt-erpeg\projekt\src\main.cpp
 	"Game.h"
+
+1462489169 source:d:\projekterpeg\projekt-erpeg\projekt\src\object.cpp
+	"Object.h"
+
+1462489180 d:\projekterpeg\projekt-erpeg\projekt\include\object.h
+	<string>
+	<deque>
+	"Animation.h"
+
+1462481930 source:d:\projekterpeg\projekt-erpeg\projekt\src\player.cpp
+	"Player.h"
+
+1462486158 d:\projekterpeg\projekt-erpeg\projekt\include\player.h
+	"Object.h"
+	<string>
+
+1462485208 source:d:\projekterpeg\projekt-erpeg\projekt\src\map.cpp
+	"Map.h"
+
+1462485107 d:\projekterpeg\projekt-erpeg\projekt\include\map.h
+	"Object.h"
+	"Player.h"
+	"NPC.h"
+	<deque>
+
+1462468236 source:d:\projekterpeg\projekt-erpeg\projekt\src\thingstodo.cpp
+	"ThingsToDo.h"
+
+1462468257 d:\projekterpeg\projekt-erpeg\projekt\include\thingstodo.h
+	<string>
+
+1462467686 d:\projekterpeg\projekt-erpeg\projekt\include\npc.h
+
+1462467686 source:d:\projekterpeg\projekt-erpeg\projekt\src\npc.cpp
+	"NPC.h"
+
+1462488968 source:d:\projekterpeg\projekt-erpeg\projekt\src\animation.cpp
+	"Animation.h"
+	<windows.h>
+
+1462489545 d:\projekterpeg\projekt-erpeg\projekt\include\animation.h
+	<SFML/Graphics.hpp>
+	<string>
+	<deque>
+	<iostream>
 

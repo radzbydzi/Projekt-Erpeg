@@ -50,9 +50,22 @@
 		<Linker>
 			<Add directory="../SFML-2.3.2/lib" />
 		</Linker>
+		<Unit filename="include/Animation.h" />
 		<Unit filename="include/Game.h" />
+		<Unit filename="include/Map.h" />
+		<Unit filename="include/NPC.h" />
+		<Unit filename="include/Object.h" />
+		<Unit filename="include/Player.h" />
+		<Unit filename="include/ThingsToDo.h" />
+		<Unit filename="src/Animation.cpp" />
 		<Unit filename="src/Game.cpp" />
+		<Unit filename="src/Map.cpp" />
+		<Unit filename="src/NPC.cpp" />
+		<Unit filename="src/Object.cpp" />
+		<Unit filename="src/Player.cpp" />
+		<Unit filename="src/ThingsToDo.cpp" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="graphics/testcharactertileset.png" />
 		<Extensions>
 			<code_completion />
 			<envvars />

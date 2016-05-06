@@ -35,7 +35,7 @@ void Animation::setCurrentFrame(int nr)
 }
 void Animation::setNextFrameAsCurrent()
 {
-    if(currentFrame<frames.size())
+    if((currentFrame+1)<frames.size())
     {
         currentFrame+=1;
     }
@@ -46,12 +46,11 @@ void Animation::setNextFrameAsCurrent()
             currentFrame=0;
         }
     }
-    cout<<currentFrame<<endl;
-    Sleep( 1000 );
+    Sleep( 100 );
 }
 void Animation::setPreviousFrameAsCurrent()
 {
-    if(currentFrame>frames.size())
+    if((currentFrame-1)>frames.size())
     {
         currentFrame-=1;
     }
@@ -72,7 +71,7 @@ sf::Sprite Animation::getSprite()
     sf::Sprite sprite;
     sprite.setTexture(*texture);
     frame tmpFrHldr=getFrame(currentFrame);//tymczasowy trzymacz aktualnej klatki
-    cout<<": "<<this<<endl;
+    //cout<<": "<<this<<endl;
 
     sprite.setTextureRect(sf::IntRect(tmpFrHldr.x, tmpFrHldr.y, tmpFrHldr.w, tmpFrHldr.h));
     return sprite;

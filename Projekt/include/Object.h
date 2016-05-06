@@ -39,11 +39,11 @@ class Object
     protected:
 
     private:
-        int x;
-        int y;
-        int orx;
-        int ory;
-        int rot;
+        int x=0;
+        int y=0;
+        int orx=0;
+        int ory=0;
+        int rot=0;
         string name;
         deque<Animation*> animations;//lista dostepnych animiacji;
         int currentAnimation=0;//aktualnie wykonywana animacja

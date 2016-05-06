@@ -771,14 +771,16 @@
 	<SFML/Graphics.hpp>
 	<iostream>
 
-1462489384 source:d:\projekterpeg\projekt-erpeg\projekt\src\game.cpp
+1462539674 source:d:\projekterpeg\projekt-erpeg\projekt\src\game.cpp
 	"Game.h"
+	<windows.h>
 
-1462479815 d:\projekterpeg\projekt-erpeg\projekt\include\game.h
+1462528244 d:\projekterpeg\projekt-erpeg\projekt\include\game.h
 	<SFML/Graphics.hpp>
 	<iostream>
 	<deque>
 	<string>
+	<vector>
 	"ThingsToDo.h"
 	"Map.h"
 
@@ -788,7 +790,7 @@
 1462489169 source:d:\projekterpeg\projekt-erpeg\projekt\src\object.cpp
 	"Object.h"
 
-1462489180 d:\projekterpeg\projekt-erpeg\projekt\include\object.h
+1462530104 d:\projekterpeg\projekt-erpeg\projekt\include\object.h
 	<string>
 	<deque>
 	"Animation.h"
@@ -820,7 +822,7 @@
 1462467686 source:d:\projekterpeg\projekt-erpeg\projekt\src\npc.cpp
 	"NPC.h"
 
-1462488968 source:d:\projekterpeg\projekt-erpeg\projekt\src\animation.cpp
+1462527941 source:d:\projekterpeg\projekt-erpeg\projekt\src\animation.cpp
 	"Animation.h"
 	<windows.h>
 

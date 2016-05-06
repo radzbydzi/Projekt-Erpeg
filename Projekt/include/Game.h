@@ -5,6 +5,7 @@
 #include <iostream>
 #include <deque>
 #include <string>
+#include <vector>
 #include "ThingsToDo.h"
 #include "Map.h"
 using namespace std;

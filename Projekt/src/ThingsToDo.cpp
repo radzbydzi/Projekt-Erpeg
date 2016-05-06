@@ -9,5 +9,4 @@ ThingsToDo::ThingsToDo(string command, string what, int importance)
 
 ThingsToDo::~ThingsToDo()
 {
-    //dtor
 }

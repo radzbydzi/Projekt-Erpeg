@@ -10,7 +10,9 @@ Object::Object(string name)
 }
 Object::~Object()
 {
-    //dtor
+    for(int i = 0; i<animations.size();i++)
+        animations.pop_back();
+
 }
 void Object::addAnimation(Animation* anim)
 {

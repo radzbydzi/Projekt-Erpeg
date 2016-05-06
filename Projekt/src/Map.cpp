@@ -11,9 +11,14 @@ Map::Map(string name)
 }
 Map::~Map()
 {
-    //dtor
+    for(int i = 0; i<objects.size();i++)
+        objects.pop_back();
+    for(int i = 0; i<players.size();i++)
+        players.pop_back();
+    for(int i = 0; i<npcs.size();i++)
+        npcs.pop_back();
 }
-void Map::addObject(Object obj)
+void Map::addObject(Object* obj)
 {
     objects.push_back(obj);
 }
@@ -49,7 +54,7 @@ void Map::removeNPC(string name)
 {
 
 }
-deque<Object> Map::getObjectsList()
+deque<Object*> Map::getObjectsList()
 {
     return objects;
 }

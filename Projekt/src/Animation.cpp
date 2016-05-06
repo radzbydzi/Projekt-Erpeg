@@ -15,7 +15,8 @@ Animation::Animation(string name, bool repeat)
 }
 Animation::~Animation()
 {
-    //dtor
+    for(int i = 0; i<frames.size();i++)
+        frames.pop_back();
 }
 void Animation::addFrame(int x, int y, int w, int h)
 {

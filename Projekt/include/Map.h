@@ -12,7 +12,7 @@ class Map
         Map(string name);
         ~Map();
         //--------------------
-        void addObject(Object obj);
+        void addObject(Object* obj);
         void removeObject(int nr);
         void removeObject(string name);
         //===
@@ -24,14 +24,14 @@ class Map
         void removeNPC(int nr);
         void removeNPC(string name);
         //-------------------
-        deque<Object> getObjectsList();
+        deque<Object*> getObjectsList();
         deque<Player> getPlayersList();
         deque<NPC> getNPCsList();
     protected:
 
     private:
         string name;
-        deque<Object> objects;//lista obiektow na mapie(czy tez sektorze)
+        deque<Object*> objects;//lista obiektow na mapie(czy tez sektorze)
         deque<Player> players;//lista graczy na mapie(czy tez sektorze)
         deque<NPC> npcs;//lista NPCtow na mapie(czy tez sektorze)
 };

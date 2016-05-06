@@ -154,6 +154,14 @@ void Game::logicThreadFunc()
                 {
                     tmpobj->setY(tmpobj->getY()+atoi( splited[1].c_str() ));
                 }
+                tmpobj->getCurrentAnimation()->setNextFrameAsCurrent();
+            }else if(splited[0]=="animchg")
+            {
+                if(tmpobj->getCurrentAnimation()->getName()!=splited[1])
+                {
+                    tmpobj->setCurrentAnimation(splited[1]);
+                    tmpobj->getCurrentAnimation()->resetAnimation();
+                }
             }
             taskQueue.pop_front();
         }
@@ -177,20 +185,24 @@ void Game::interactionThreadFunc()
             {
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
                 {
+                    //taskQueue.push_back(new ThingsToDo(string("animchg:walkUp"), getActiveObjectName(),1));
                     taskQueue.push_back(new ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("animchg:walkUp"), getActiveObjectName(),1));
+
                 }if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
                 {
+                    //taskQueue.push_back(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
                     taskQueue.push_back(new ThingsToDo(string("go:-1:Y"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
+
                 }if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
                 {
+                    //taskQueue.push_back(new ThingsToDo(string("animchg:walkLeft"), getActiveObjectName(),1));
                     taskQueue.push_back(new ThingsToDo(string("go:1:X"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("animchg:walkLeft"), getActiveObjectName(),1));
+
                 }if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
                 {
+                    //taskQueue.push_back(new ThingsToDo(string("animchg:walkRight"), getActiveObjectName(),1));
                     taskQueue.push_back(new ThingsToDo(string("go:-1:X"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("animchg:walkRight"), getActiveObjectName(),1));
+
                 }
 
             }

@@ -47,7 +47,6 @@ void Animation::setNextFrameAsCurrent()
             currentFrame=0;
         }
     }
-    Sleep( 100 );
 }
 void Animation::setPreviousFrameAsCurrent()
 {

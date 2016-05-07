@@ -771,7 +771,7 @@
 	<SFML/Graphics.hpp>
 	<iostream>
 
-1462568593 source:d:\projekterpeg\projekt-erpeg\projekt\src\game.cpp
+1462627155 source:d:\projekterpeg\projekt-erpeg\projekt\src\game.cpp
 	"Game.h"
 	<windows.h>
 
@@ -822,7 +822,7 @@
 1462467686 source:d:\projekterpeg\projekt-erpeg\projekt\src\npc.cpp
 	"NPC.h"
 
-1462549017 source:d:\projekterpeg\projekt-erpeg\projekt\src\animation.cpp
+1462568716 source:d:\projekterpeg\projekt-erpeg\projekt\src\animation.cpp
 	"Animation.h"
 	<windows.h>
 

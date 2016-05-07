@@ -41,13 +41,15 @@ void Game::graphicsThreadFunc()
             Animation* tmpAnimation=currentMap.getObjectsList()[i]->getCurrentAnimation();
             sf::Sprite tmpSprite = tmpAnimation->getSprite();
             //cout<<currentMap.getObjectsList()[i]->getX()<<" "<<currentMap.getObjectsList()[i]->getY()<<endl;
-            //tmpSprite.setPosition(sf::Vector2f(currentMap.getObjectsList()[i]->getX(), currentMap.getObjectsList()[i]->getY()));
+            //cout<<currentMap.getObjectsList()[0]->getX()<<"|"<<currentMap.getObjectsList()[0]->getY()<<endl;
+            tmpSprite.setPosition(currentMap.getObjectsList()[0]->getX(), currentMap.getObjectsList()[0]->getY());
+            //cout<<tmpSprite.getPosition().x<<"|"<<tmpSprite.getPosition().y<<endl;
             //tmpSprite.setPosition(20,52);
-            if(currentMap.getObjectsList()[i]->getOriginX() && currentMap.getObjectsList()[i]->getOriginY())
-                tmpSprite.setOrigin(currentMap.getObjectsList()[i]->getOriginX(), currentMap.getObjectsList()[i]->getOriginY());
+            //if(currentMap.getObjectsList()[i]->getOriginX() && currentMap.getObjectsList()[i]->getOriginY())
+                //tmpSprite.setOrigin(currentMap.getObjectsList()[i]->getOriginX(), currentMap.getObjectsList()[i]->getOriginY());
 
-            if(currentMap.getObjectsList()[i]->getRotation())
-                tmpSprite.setRotation(currentMap.getObjectsList()[i]->getRotation());
+            //if(currentMap.getObjectsList()[i]->getRotation())
+                //tmpSprite.setRotation(currentMap.getObjectsList()[i]->getRotation());
 
             window.draw(tmpSprite);//renderuje
         }
@@ -116,10 +118,10 @@ void Game::logicThreadFunc()
     //walkup
     Animation* walkRight = new Animation("walkRight",true);
     walkRight->setTexture(&testowa);
-    walkRight->addFrame(0,0,32,64);
-    walkRight->addFrame(32,0,32,64);
-    walkRight->addFrame(64,0,32,64);
-    walkRight->addFrame(96,0,32,64);
+    walkRight->addFrame(0,128,32,64);
+    walkRight->addFrame(32,128,32,64);
+    walkRight->addFrame(64,128,32,64);
+    walkRight->addFrame(96,128,32,64);
     walkRight->setCurrentFrame(0);
     walkRight->setRepeat(true);
     //-----------
@@ -132,13 +134,14 @@ void Game::logicThreadFunc()
     tmpobj->addAnimation(walkDown);
     tmpobj->addAnimation(walkLeft);
     tmpobj->addAnimation(walkRight);
-
+    //tmpobj->setX(100);
     tmp->addObject(tmpobj);
 
     currentMap=*tmp;
 
     while(window.isOpen())
     {
+
         for(int i=0; i<taskQueue.size(); i++)
         {
             //parse taskQueue
@@ -148,20 +151,27 @@ void Game::logicThreadFunc()
                 //cout<<"rot: "<<tmpobj->getRotation()<<endl;
                 if(splited[2]=="X")
                 {
-                    tmpobj->setX(tmpobj->getX()+atoi( splited[1].c_str() ));
+                    mutex.lock();
+                    currentMap.getObjectsList()[0]->setX(currentMap.getObjectsList()[0]->getX()+atoi( splited[1].c_str()));
+                    mutex.unlock();
                     //cout<<"go: "<<tmpobj->getX()<<" : "<< splited[2]<<endl;
                 }else if(splited[2]=="Y")
                 {
-                    tmpobj->setY(tmpobj->getY()+atoi( splited[1].c_str() ));
+                    mutex.lock();
+                    currentMap.getObjectsList()[0]->setY(currentMap.getObjectsList()[0]->getY()+atoi( splited[1].c_str()));
+                    mutex.unlock();
                 }
-                tmpobj->getCurrentAnimation()->setNextFrameAsCurrent();
             }else if(splited[0]=="animchg")
             {
                 if(tmpobj->getCurrentAnimation()->getName()!=splited[1])
                 {
                     tmpobj->setCurrentAnimation(splited[1]);
                     tmpobj->getCurrentAnimation()->resetAnimation();
+                }else
+                {
+                    tmpobj->getCurrentAnimation()->setNextFrameAsCurrent();
                 }
+
             }
             taskQueue.pop_front();
         }
@@ -174,35 +184,39 @@ void Game::interactionThreadFunc()
     cout<<"Jestem w¹tkiem interakcji"<<endl;
     //sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
     window.setActive(false);
+    int xaq=0;
+    int yaq=0;
     while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event))
         {
+
             if (event.type == sf::Event::Closed)
                 window.close();
             else if(sf::Keyboard::isKeyPressed)
             {
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
                 {
-                    //taskQueue.push_back(new ThingsToDo(string("animchg:walkUp"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
+                    taskQueue.push_back(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
+                    taskQueue.push_back(new ThingsToDo(string("go:-1:Y"), getActiveObjectName(),1));
+                    //cout<<currentMap.getObjectsList()[0]->getY()<<endl;
+
 
                 }if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
                 {
-                    //taskQueue.push_back(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("go:-1:Y"), getActiveObjectName(),1));
+                    taskQueue.push_back(new ThingsToDo(string("animchg:walkUp"), getActiveObjectName(),1));
+                    taskQueue.push_back(new ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
 
                 }if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
                 {
-                    //taskQueue.push_back(new ThingsToDo(string("animchg:walkLeft"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("go:1:X"), getActiveObjectName(),1));
+                    taskQueue.push_back(new ThingsToDo(string("animchg:walkLeft"), getActiveObjectName(),1));
+                    taskQueue.push_back(new ThingsToDo(string("go:-1:X"), getActiveObjectName(),1));
 
                 }if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
                 {
-                    //taskQueue.push_back(new ThingsToDo(string("animchg:walkRight"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("go:-1:X"), getActiveObjectName(),1));
-
+                    taskQueue.push_back(new ThingsToDo(string("animchg:walkRight"), getActiveObjectName(),1));
+                    taskQueue.push_back(new ThingsToDo(string("go:1:X"), getActiveObjectName(),1));
                 }
 
             }

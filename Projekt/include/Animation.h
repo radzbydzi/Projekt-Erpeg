@@ -40,7 +40,10 @@ class Animation
         string getName();
         void setRepeat(bool repeat);
 
-        ///////////////////////
+        void setFrameDuration(int duration);
+        void setKeepPlaying(bool keepPlaying);
+        int getFrameDuration();
+        bool getKeepPlaying();
 
     protected:
 
@@ -50,6 +53,10 @@ class Animation
         deque<frame> frames;//lista klatek
         int currentFrame;//numer aktualnej klatki w liscie
         sf::Texture* texture;// wskaznik na teksture/ w ktorej znajduje sie ta animacja
+        sf::Clock clock;
+        //sf::Time time;//zmienna
+        bool keepPlaying=false;//czy animacja jest odgrywana czy nie
+        int frameDuration=100;//czas trwania pojedynczej klatki w milisekundach
 };
 
 #endif // ANIMATION_H

@@ -36,31 +36,40 @@ void Animation::setCurrentFrame(int nr)
 }
 void Animation::setNextFrameAsCurrent()
 {
-    if((currentFrame+1)<frames.size())
+    if(clock.getElapsedTime().asMilliseconds()>=frameDuration)
     {
-        currentFrame+=1;
-    }
-    else
-    {
-        if(repeat==true)
+        if((currentFrame+1)<frames.size())
         {
-            currentFrame=0;
+            currentFrame+=1;
         }
+        else
+        {
+            if(repeat==true)
+            {
+                currentFrame=0;
+            }
+        }
+        clock.restart();
     }
 }
 void Animation::setPreviousFrameAsCurrent()
 {
-    if((currentFrame-1)>frames.size())
+    if(clock.getElapsedTime().asMilliseconds()>=frameDuration)
     {
-        currentFrame-=1;
-    }
-    else
-    {
-        if(repeat==true)
+        if((currentFrame-1)>frames.size())
         {
-            currentFrame=frames.size()-1;//bo jesli tablica jest 5 elementowa to jest z zakresu 0-4
+            currentFrame-=1;
         }
+        else
+        {
+            if(repeat==true)
+            {
+                currentFrame=frames.size()-1;//bo jesli tablica jest 5 elementowa to jest z zakresu 0-4
+            }
+        }
+        clock.restart();
     }
+
 }
 void Animation::setTexture(sf::Texture* texture)
 {
@@ -88,4 +97,21 @@ string Animation::getName()
 void Animation::setRepeat(bool repeat)
 {
     this->repeat=repeat;
+}
+
+void Animation::setFrameDuration(int duration)
+{
+    frameDuration=duration;
+}
+void Animation::setKeepPlaying(bool keepPlaying)
+{
+    this->keepPlaying=keepPlaying;
+}
+int Animation::getFrameDuration()
+{
+    return frameDuration;
+}
+bool Animation::getKeepPlaying()
+{
+    return keepPlaying;
 }

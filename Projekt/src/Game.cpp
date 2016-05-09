@@ -45,7 +45,7 @@ void Game::graphicsThreadFunc()
             tmpSprite.setPosition(currentMap.getObjectsList()[0]->getX(), currentMap.getObjectsList()[0]->getY());
             //cout<<tmpSprite.getPosition().x<<"|"<<tmpSprite.getPosition().y<<endl;
             //tmpSprite.setPosition(20,52);
-            //if(currentMap.getObjectsList()[i]->getOriginX() && currentMap.getObjectsList()[i]->getOriginY())
+            //if(currentMap.gehttp://allegro.pl/przewod-kabel-hdmi-hdmi-1-4a-plaski-10m-3d-i6061653496.htmltObjectsList()[i]->getOriginX() && currentMap.getObjectsList()[i]->getOriginY())
                 //tmpSprite.setOrigin(currentMap.getObjectsList()[i]->getOriginX(), currentMap.getObjectsList()[i]->getOriginY());
 
             //if(currentMap.getObjectsList()[i]->getRotation())
@@ -196,6 +196,7 @@ void Game::interactionThreadFunc()
                 window.close();
             else if(sf::Keyboard::isKeyPressed)
             {
+                mutex.lock();
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
                 {
                     taskQueue.push_back(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
@@ -218,6 +219,7 @@ void Game::interactionThreadFunc()
                     taskQueue.push_back(new ThingsToDo(string("animchg:walkRight"), getActiveObjectName(),1));
                     taskQueue.push_back(new ThingsToDo(string("go:1:X"), getActiveObjectName(),1));
                 }
+                mutex.unlock();
 
             }
         }

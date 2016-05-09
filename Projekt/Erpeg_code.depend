@@ -771,7 +771,7 @@
 	<SFML/Graphics.hpp>
 	<iostream>
 
-1462627155 source:d:\projekterpeg\projekt-erpeg\projekt\src\game.cpp
+1462665772 source:d:\projekterpeg\projekt-erpeg\projekt\src\game.cpp
 	"Game.h"
 	<windows.h>
 
@@ -822,11 +822,11 @@
 1462467686 source:d:\projekterpeg\projekt-erpeg\projekt\src\npc.cpp
 	"NPC.h"
 
-1462568716 source:d:\projekterpeg\projekt-erpeg\projekt\src\animation.cpp
+1462807041 source:d:\projekterpeg\projekt-erpeg\projekt\src\animation.cpp
 	"Animation.h"
 	<windows.h>
 
-1462489545 d:\projekterpeg\projekt-erpeg\projekt\include\animation.h
+1462807094 d:\projekterpeg\projekt-erpeg\projekt\include\animation.h
 	<SFML/Graphics.hpp>
 	<string>
 	<deque>

@@ -39,6 +39,7 @@ class Animation
         void resetAnimation();
         string getName();
         void setRepeat(bool repeat);
+        void setName(string name);
 
         void setFrameDuration(int duration);
         void setKeepPlaying(bool keepPlaying);

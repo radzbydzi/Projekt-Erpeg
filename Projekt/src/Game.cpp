@@ -1,15 +1,17 @@
 #include "Game.h"
 #include<windows.h>
 //wywalic to
-std::vector<std::string> split(const std::string &text, char sep) {
-  std::vector<std::string> tokens;
-  std::size_t start = 0, end = 0;
-  while ((end = text.find(sep, start)) != std::string::npos) {
-    tokens.push_back(text.substr(start, end - start));
-    start = end + 1;
-  }
-  tokens.push_back(text.substr(start));
-  return tokens;
+bool Game::isRunning()
+{
+        return isRunningVar;
+}
+void Game::turnOff()
+{
+    isRunningVar=false;
+}
+void Game::loadMap(Map loadedMap)
+{
+    currentMap=loadedMap;
 }
 void Game::start()
 {
@@ -38,8 +40,8 @@ void Game::graphicsThreadFunc()
         window.clear();
         for(int i=0; i<currentMap.getObjectsList().size();i++)
         {
-            Animation* tmpAnimation=currentMap.getObjectsList()[i]->getCurrentAnimation();
-            sf::Sprite tmpSprite = tmpAnimation->getSprite();
+            Animation tmpAnimation=*currentMap.getObjectsList()[i]->getCurrentAnimation();
+            sf::Sprite tmpSprite = tmpAnimation.getSprite();
             //cout<<currentMap.getObjectsList()[i]->getX()<<" "<<currentMap.getObjectsList()[i]->getY()<<endl;
             //cout<<currentMap.getObjectsList()[0]->getX()<<"|"<<currentMap.getObjectsList()[0]->getY()<<endl;
             tmpSprite.setPosition(currentMap.getObjectsList()[0]->getX(), currentMap.getObjectsList()[0]->getY());
@@ -53,7 +55,14 @@ void Game::graphicsThreadFunc()
 
             window.draw(tmpSprite);//renderuje
         }
-
+        for(int i=0; i<currentMap.getPlayersList().size();i++)
+        {
+            Animation tmpAnimation=*currentMap.getPlayersList()[i]->getCurrentAnimation();
+            sf::Sprite tmpSprite = tmpAnimation.getSprite();
+            tmpSprite.setPosition(currentMap.getPlayersList()[i]->getX(), currentMap.getPlayersList()[i]->getY());
+            //cout<<tmpSprite.getPosition().x<<" "<<tmpSprite.getPosition().y<<endl;
+            window.draw(tmpSprite);//renderuje
+        }
         /*for(int i=0; i<currentMap.getNPCList().size();i++)
         {
             Object tmpObj=currentMap.getNPCList()[i];
@@ -88,93 +97,112 @@ void Game::logicThreadFunc()
         std::cout << "failed to load image" << std::endl;
         exit(1);
     }
+    sf::Texture testowa2;
+    if(!testowa2.loadFromFile("graphics/drzewo_burn2.jpg"))
+    {
+        std::cout << "failed to load image" << std::endl;
+        exit(1);
+    }
     //walkup
-    Animation* walkUp = new Animation("walkUp",true);
-    walkUp->setTexture(&testowa);
-    walkUp->addFrame(0,0,32,64);
-    walkUp->addFrame(32,0,32,64);
-    walkUp->addFrame(64,0,32,64);
-    walkUp->addFrame(96,0,32,64);
-    walkUp->setCurrentFrame(0);
-    walkUp->setRepeat(true);
+    Animation walkUp;
+    walkUp.setName("walkUp");
+    walkUp.setKeepPlaying(false);
+    walkUp.setTexture(&testowa);
+    walkUp.addFrame(0,0,32,64);
+    walkUp.addFrame(32,0,32,64);
+    walkUp.addFrame(64,0,32,64);
+    walkUp.addFrame(96,0,32,64);
+    walkUp.setCurrentFrame(0);
+    walkUp.setRepeat(true);
     //walkdown
-    Animation* walkDown = new Animation("walkDown",true);
-    walkDown->setTexture(&testowa);
-    walkDown->addFrame(0,192,32,64);
-    walkDown->addFrame(32,192,32,64);
-    walkDown->addFrame(64,192,32,64);
-    walkDown->addFrame(96,192,32,64);
-    walkDown->setCurrentFrame(0);
-    walkDown->setRepeat(true);
+    Animation walkDown = Animation("walkDown",true);
+    walkDown.setTexture(&testowa);
+    walkDown.addFrame(0,192,32,64);
+    walkDown.addFrame(32,192,32,64);
+    walkDown.addFrame(64,192,32,64);
+    walkDown.addFrame(96,192,32,64);
+    walkDown.setCurrentFrame(0);
+    walkDown.setRepeat(true);
     //walkleft
-    Animation* walkLeft = new Animation("walkLeft",true);
-    walkLeft->setTexture(&testowa);
-    walkLeft->addFrame(0,64,32,64);
-    walkLeft->addFrame(32,64,32,64);
-    walkLeft->addFrame(64,64,32,64);
-    walkLeft->addFrame(96,64,32,64);
-    walkLeft->setCurrentFrame(0);
-    walkLeft->setRepeat(true);
+    Animation walkLeft = Animation("walkLeft",true);
+    walkLeft.setTexture(&testowa);
+    walkLeft.addFrame(0,64,32,64);
+    walkLeft.addFrame(32,64,32,64);
+    walkLeft.addFrame(64,64,32,64);
+    walkLeft.addFrame(96,64,32,64);
+    walkLeft.setCurrentFrame(0);
+    walkLeft.setRepeat(true);
     //walkup
-    Animation* walkRight = new Animation("walkRight",true);
-    walkRight->setTexture(&testowa);
-    walkRight->addFrame(0,128,32,64);
-    walkRight->addFrame(32,128,32,64);
-    walkRight->addFrame(64,128,32,64);
-    walkRight->addFrame(96,128,32,64);
-    walkRight->setCurrentFrame(0);
-    walkRight->setRepeat(true);
+    Animation walkRight = Animation("walkRight",true);
+    walkRight.setTexture(&testowa);
+    walkRight.addFrame(0,128,32,64);
+    walkRight.addFrame(32,128,32,64);
+    walkRight.addFrame(64,128,32,64);
+    walkRight.addFrame(96,128,32,64);
+    walkRight.setCurrentFrame(0);
+    walkRight.setRepeat(true);
     //-----------
-
-    Object* tmpobj = new Object("obj1");
-    //tmpobj->setX(100);
-    //tmpobj->setY(100);
+    //----
+    Animation burn = Animation("treeBurn",true);
+    burn.setTexture(&testowa2);
+    burn.addFrame(0,0,148,148);
+    burn.addFrame(148,0,148,148);
+    burn.addFrame(296,0,148,148);
+    burn.addFrame(444,0,148,148);
+    burn.addFrame(592,0,148,148);
+    burn.setCurrentFrame(0);
+    burn.setRepeat(true);
+    //
+    Object* tree = new Object("tree");
+    tree->addAnimation(burn);
+    tree->setX(30);
+    tree->setY(30);
+    tree->addLongTermTask(ThingsToDo("animchg:treeBurn","d",1));
+    tmp->addObject(tree);
+    //cout<<tmpobj->getCurrentAnimation().getName()<<endl;
+    Player* tmpobj = new Player("Avaline");
+    cout<<"Avaline "<<tmpobj<<endl;
 
     tmpobj->addAnimation(walkUp);
     tmpobj->addAnimation(walkDown);
     tmpobj->addAnimation(walkLeft);
     tmpobj->addAnimation(walkRight);
+    //------------------------------------
+    //----
+    //cout<<tmpobj->getCurrentAnimation().getName()<<endl;
+    Player* tmpobj2 = new Player("George");
+    cout<<"George "<<tmpobj2<<endl;
+
+    tmpobj2->setX(200);
+    tmpobj2->setY(200);
+
+    tmpobj2->addAnimation(walkUp);
+    tmpobj2->addAnimation(walkDown);
+    tmpobj2->addAnimation(walkLeft);
+    tmpobj2->addAnimation(walkRight);
+    //------------------------------------
     //tmpobj->setX(100);
-    tmp->addObject(tmpobj);
-
+    //tmp->addObject(tmpobj);
+    tmp->addPlayer(tmpobj);
+    tmp->addPlayer(tmpobj2);
     currentMap=*tmp;
-
+    setCurrentPlayer("George");
     while(window.isOpen())
     {
-
-        for(int i=0; i<taskQueue.size(); i++)
+        mutex.lock();
+        for(int i=0; i<currentMap.getObjectsList().size(); i++)
         {
-            //parse taskQueue
-            vector<string> splited = split(taskQueue[i]->command,':');
-            if(splited[0]=="go")
-            {
-                //cout<<"rot: "<<tmpobj->getRotation()<<endl;
-                if(splited[2]=="X")
-                {
-                    mutex.lock();
-                    currentMap.getObjectsList()[0]->setX(currentMap.getObjectsList()[0]->getX()+atoi( splited[1].c_str()));
-                    mutex.unlock();
-                    //cout<<"go: "<<tmpobj->getX()<<" : "<< splited[2]<<endl;
-                }else if(splited[2]=="Y")
-                {
-                    mutex.lock();
-                    currentMap.getObjectsList()[0]->setY(currentMap.getObjectsList()[0]->getY()+atoi( splited[1].c_str()));
-                    mutex.unlock();
-                }
-            }else if(splited[0]=="animchg")
-            {
-                if(tmpobj->getCurrentAnimation()->getName()!=splited[1])
-                {
-                    tmpobj->setCurrentAnimation(splited[1]);
-                    tmpobj->getCurrentAnimation()->resetAnimation();
-                }else
-                {
-                    tmpobj->getCurrentAnimation()->setNextFrameAsCurrent();
-                }
-
-            }
-            taskQueue.pop_front();
+            currentMap.getObjectsList()[i]->processNextTask();
         }
+        //for(int i=0; i<currentMap.getNPCsList().size(); i++)
+        //{
+        //    currentMap.getNPCsList()[i]->processNextTask();
+        //}
+        for(int i=0; i<currentMap.getPlayersList().size(); i++)
+        {
+            currentMap.getPlayersList()[i]->processNextTask();
+        }
+        mutex.unlock();
 //        cout<<"> "<<&tmpanim<<endl;
     }
 }
@@ -186,46 +214,91 @@ void Game::interactionThreadFunc()
     window.setActive(false);
     int xaq=0;
     int yaq=0;
+    sf::Clock delay_clock;
+        delay_clock.restart();
     while (window.isOpen())
     {
         sf::Event event;
-        while (window.pollEvent(event))
-        {
 
-            if (event.type == sf::Event::Closed)
-                window.close();
-            else if(sf::Keyboard::isKeyPressed)
-            {
-                mutex.lock();
+        if(delay_clock.getElapsedTime().asMilliseconds()>10)
+        {
+                //currentMap.getPlayersList()[0]->addTask(new ThingsToDo(string("Dupa:1:23"), getActiveObjectName(),1));
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
                 {
-                    taskQueue.push_back(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("go:-1:Y"), getActiveObjectName(),1));
-                    //cout<<currentMap.getObjectsList()[0]->getY()<<endl;
-
-
-                }if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-                {
-                    taskQueue.push_back(new ThingsToDo(string("animchg:walkUp"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
-
-                }if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-                {
-                    taskQueue.push_back(new ThingsToDo(string("animchg:walkLeft"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("go:-1:X"), getActiveObjectName(),1));
-
-                }if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-                {
-                    taskQueue.push_back(new ThingsToDo(string("animchg:walkRight"), getActiveObjectName(),1));
-                    taskQueue.push_back(new ThingsToDo(string("go:1:X"), getActiveObjectName(),1));
+                    //cout<<"Adres player "<<getCurrentPlayer()<<endl;
+                    getCurrentPlayer()->addTask(ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
+                    if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                    {
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:-1:Y"), getActiveObjectName(),1));
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:1:X"), getActiveObjectName(),1));
+                        //taskQueue.push_back(new ThingsToDo(string("animchg:walkLeft"), getActiveObjectName(),1));
+                    }
+                    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+                    {
+                        //taskQueue.push_back(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:-1:Y"), getActiveObjectName(),1));
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:-1:X"), getActiveObjectName(),1));
+                    }
+                    else
+                    {
+                        //getCurrentPlayer()->addTask(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:-1:Y"), getActiveObjectName(),1));
+                    }
                 }
-                mutex.unlock();
 
-            }
+                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+                {
+                    getCurrentPlayer()->addTask(ThingsToDo(string("animchg:walkUp"), getActiveObjectName(),1));
+                    getCurrentPlayer()->addTask(ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
+
+                }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+                {
+                    getCurrentPlayer()->addTask(ThingsToDo(string("animchg:walkLeft"), getActiveObjectName(),1));
+                    getCurrentPlayer()->addTask(ThingsToDo(string("go:-1:X"), getActiveObjectName(),1));
+
+                }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                {
+                    getCurrentPlayer()->addTask(ThingsToDo(string("animchg:walkRight"), getActiveObjectName(),1));
+                    getCurrentPlayer()->addTask(ThingsToDo(string("go:1:X"), getActiveObjectName(),1));
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+                {
+                    cout<<"C"<<endl;
+                    if(getCurrentPlayer()->getName()=="Avaline")
+                    {
+                        setCurrentPlayer("George");
+                    }else
+                    {
+                        setCurrentPlayer("Avaline");
+                    }
+                }
+                delay_clock.restart();
+        }
+
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
         }
     }
 }
 string Game::getActiveObjectName()
 {
     return activeObjectName;
+}
+Player* Game::getCurrentPlayer()
+{
+    for(int i=0; i<currentMap.getPlayersList().size();i++)
+    {
+        if(currentMap.getPlayersList()[i]->getName()==currentPlayer)
+        {
+            return currentMap.getPlayersList()[i];
+        }
+
+    }
+    return 0;
+}
+void Game::setCurrentPlayer(string name)
+{
+    currentPlayer=name;
 }

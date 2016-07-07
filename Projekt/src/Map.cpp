@@ -30,7 +30,7 @@ void Map::removeObject(string name)
 {
 
 }
-void Map::addPlayer(Player player)
+void Map::addPlayer(Player* player)
 {
     players.push_back(player);
 }
@@ -42,7 +42,7 @@ void Map::removePlayer(string name)
 {
 
 }
-void Map::addNPC(NPC npc)
+void Map::addNPC(NPC* npc)
 {
     npcs.push_back(npc);
 }
@@ -58,11 +58,11 @@ deque<Object*> Map::getObjectsList()
 {
     return objects;
 }
-deque<Player> Map::getPlayersList()
+deque<Player*> Map::getPlayersList()
 {
     return players;
 }
-deque<NPC> Map::getNPCsList()
+deque<NPC*> Map::getNPCsList()
 {
     return npcs;
 }

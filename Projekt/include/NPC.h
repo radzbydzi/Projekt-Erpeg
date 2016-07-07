@@ -6,8 +6,7 @@ class NPC
 {
     public:
         NPC();
-        virtual ~NPC();
-
+        ~NPC();
     protected:
 
     private:

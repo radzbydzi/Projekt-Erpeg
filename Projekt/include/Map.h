@@ -16,24 +16,24 @@ class Map
         void removeObject(int nr);
         void removeObject(string name);
         //===
-        void addPlayer(Player player);
+        void addPlayer(Player* player);
         void removePlayer(int nr);
         void removePlayer(string name);
         //===
-        void addNPC(NPC npc);
+        void addNPC(NPC* npc);
         void removeNPC(int nr);
         void removeNPC(string name);
         //-------------------
         deque<Object*> getObjectsList();
-        deque<Player> getPlayersList();
-        deque<NPC> getNPCsList();
+        deque<Player*> getPlayersList();
+        deque<NPC*> getNPCsList();
     protected:
 
     private:
         string name;
         deque<Object*> objects;//lista obiektow na mapie(czy tez sektorze)
-        deque<Player> players;//lista graczy na mapie(czy tez sektorze)
-        deque<NPC> npcs;//lista NPCtow na mapie(czy tez sektorze)
+        deque<Player*> players;//lista graczy na mapie(czy tez sektorze)
+        deque<NPC*> npcs;//lista NPCtow na mapie(czy tez sektorze)
 };
 
 #endif // MAP_H

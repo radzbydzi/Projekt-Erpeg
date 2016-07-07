@@ -115,3 +115,7 @@ bool Animation::getKeepPlaying()
 {
     return keepPlaying;
 }
+void Animation::setName(string name)
+{
+    this->name=name;
+}

@@ -1,9 +1,9 @@
 #include "ThingsToDo.h"
 
-ThingsToDo::ThingsToDo(string command, string what, int importance)
+ThingsToDo::ThingsToDo(string command, string type, int importance)
 {
     this->command=command;
-    this->what=what;
+    this->type=type;
     this->importance=importance;
 }
 

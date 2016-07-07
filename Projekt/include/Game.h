@@ -18,19 +18,12 @@ class Game
         logicalthread(&Game::logicThreadFunc, this){};
     ~Game(); //deklaracja dekonstruktora
     void start();
-    bool isRunning()
-    {
-        return isRunningVar;
-    }
-    void turnOff()
-    {
-        isRunningVar=false;
-    }
-    void loadMap(Map loadedMap)
-    {
-        currentMap=loadedMap;
-    }
+    bool isRunning();
+    void turnOff();
+    void loadMap(Map loadedMap);
     string getActiveObjectName();//metoda pobierajaca zmienna activeObjectName
+    Player* getCurrentPlayer();//zwraca aktualnie wybreanego gracza
+    void setCurrentPlayer(string name);//wybiera po nazwie aktualnego gracza
 private:
     //list<Map> lista_map;
     sf::Thread graphicalthread;//deklaracja w¹tku z przypisaniem do adresu metody naszej klasy
@@ -47,6 +40,7 @@ private:
     bool mapLoaded=false;
     Map currentMap;//aktualnie wczytana mapa
     string activeObjectName;//przechowuje nazwe obiektu ktorym sterujemy
+    string currentPlayer;
 };
 
 #endif // GAME_H

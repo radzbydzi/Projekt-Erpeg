@@ -98,7 +98,13 @@ void Game::logicThreadFunc()
         exit(1);
     }
     sf::Texture testowa2;
-    if(!testowa2.loadFromFile("graphics/drzewo_burn2.jpg"))
+    if(!testowa2.loadFromFile("graphics/drzewo_burn2.png"))
+    {
+        std::cout << "failed to load image" << std::endl;
+        exit(1);
+    }
+    sf::Texture kot;
+    if(!kot.loadFromFile("graphics/koty.png"))
     {
         std::cout << "failed to load image" << std::endl;
         exit(1);
@@ -152,6 +158,9 @@ void Game::logicThreadFunc()
     burn.addFrame(592,0,148,148);
     burn.setCurrentFrame(0);
     burn.setRepeat(true);
+    //
+    //
+
     //
     Object* tree = new Object("tree");
     tree->addAnimation(burn);
@@ -249,7 +258,23 @@ void Game::interactionThreadFunc()
                 else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
                 {
                     getCurrentPlayer()->addTask(ThingsToDo(string("animchg:walkUp"), getActiveObjectName(),1));
-                    getCurrentPlayer()->addTask(ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
+                    if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                    {
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:1:X"), getActiveObjectName(),1));
+                        //taskQueue.push_back(new ThingsToDo(string("animchg:walkLeft"), getActiveObjectName(),1));
+                    }
+                    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+                    {
+                        //taskQueue.push_back(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:-1:X"), getActiveObjectName(),1));
+                    }
+                    else
+                    {
+                        //getCurrentPlayer()->addTask(new ThingsToDo(string("animchg:walkDown"), getActiveObjectName(),1));
+                        getCurrentPlayer()->addTask(ThingsToDo(string("go:1:Y"), getActiveObjectName(),1));
+                    }
 
                 }else if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
                 {

@@ -32,6 +32,70 @@ public class NewJFrame extends javax.swing.JFrame {
     int actual_px_x=0;
     int actual_px_y=0;
     String tool="pencil";
+    void showError(String err)
+    {
+        
+    }
+    class Timeline extends JPanel
+        {
+        //TODO
+            int il=10;
+            int current_frame=-1;
+            int from_frame=0;
+            protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
+                g2d.setColor(new Color(0,0,0));
+                for(int i=from_frame; i<il+from_frame; i++)
+                {          
+                    int x1,x2;
+                    x1=getSize().width/il*i;
+                    x2=x1+getSize().width/il;
+                    //System.out.println("1: "+x1);
+                    g2d.drawRect(x1,0,x2,getSize().height-1);
+                    
+                    if(sheet.animations.size()>0)
+                    {
+                        if(sheet.animations.get(sheet.current_animation)!=null)
+                        {
+                            if(sheet.animations.get(sheet.current_animation).model.size()>0 && sheet.animations.get(sheet.current_animation).model.size()>i)
+                            {
+                                if(sheet.animations.get(sheet.current_animation).getModelColorTable(i)!=null)
+                                {
+                                    if(from_frame<sheet.animations.get(sheet.current_animation).model.size() && from_frame>=0)
+                                    {
+                                        //System.out.println(">> "+(x2-x1));
+                                        int px_diff_x=(x2-x1)/30;//roznica pixeli, czyli to co zostalo
+                                        /*
+                                        for(int j=0; j<sheet.animations.get(sheet.current_animation).getModelColorTable(i).length; j++)
+                                        {
+                                            for(int k=0; k<sheet.animations.get(sheet.current_animation).getModelColorTable(i)[j].length; k++)
+                                            {
+                                                if(sheet.animations.get(sheet.current_animation).getModelColorTable(i)[j][k]==null)
+                                                {
+                                                    g2d.setColor(new Color(255,255,255));
+                                                }else
+                                                {
+                                                    g2d.setColor(sheet.animations.get(sheet.current_animation).getModelColorTable(i)[j][k]);
+                                                }
+                                                g2d.drawLine(x1+j+px_diff_x, k+(getSize().height-1)/3, x1+j+px_diff_x, k+(getSize().height-1)/3);
+                                                
+                                                
+                                            }
+                                        }*/
+                                        g2d.drawString(i+"", x1+px_diff_x , (getSize().height-1)/3);
+                                
+                                    }
+                                }
+                            }  
+                        } 
+                    }
+                    g2d.setColor(new Color(0,0,0));
+                                       
+                }
+	}
+    }
+        //-------END--------
     public class Sheet extends JPanel {
         int x=20;
         int y=20;
@@ -62,6 +126,24 @@ public class NewJFrame extends javax.swing.JFrame {
                 this.name=name;
                 cloth.add(new Color[w][h]);//dodanie pierwszej klatki
             }
+            Color[][] getClothColorTable(int frame)
+            {
+                Color[][] tmp=new Color[cloth.get(frame).length][cloth.get(frame)[0].length];
+                for(int i=0; i<cloth.get(frame).length;i++)
+                    for(int j=0; j<cloth.get(frame)[i].length;j++)
+                    {
+                       Color tmpcolor = cloth.get(frame)[i][j];
+                       if(tmpcolor!=null)
+                       {
+                           tmp[i][j]=new Color(tmpcolor.getRed(), tmpcolor.getGreen(), tmpcolor.getBlue(), tmpcolor.getAlpha());
+                       }
+                       else
+                       {
+                           tmp[i][j]=null;
+                       }
+                    }
+                return tmp;
+            }
         }
         class Animation
         {
@@ -76,6 +158,32 @@ public class NewJFrame extends javax.swing.JFrame {
                 this.h=h;
                 this.name=name;
                 model.add(new Color[w][h]);//dodanie pierwszej klatki
+            }
+            Color[][] getModelColorTable(int frame)
+            {
+                if(model.get(frame)!=null)
+                {
+                    Color[][] tmp=new Color[model.get(frame).length][model.get(frame)[0].length];
+                    for(int i=0; i<model.get(frame).length;i++)
+                        for(int j=0; j<model.get(frame)[i].length;j++)
+                        {
+                           Color tmpcolor = model.get(frame)[i][j];
+                           if(tmpcolor!=null)
+                           {
+                               tmp[i][j]=new Color(tmpcolor.getRed(), tmpcolor.getGreen(), tmpcolor.getBlue(), tmpcolor.getAlpha());
+                           }
+                           else
+                           {
+                               tmp[i][j]=null;
+                           }
+
+                        }
+                    return tmp; 
+                }else
+                {
+                    return null;
+                }
+                
             }
         }
         void addAnimation(String name)
@@ -151,6 +259,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 }
             }
             repaint();
+            //tl.repaint();
         }
         public void setX(int x)
         {
@@ -169,6 +278,8 @@ public class NewJFrame extends javax.swing.JFrame {
             int wh[]= {w,h};
             return wh;
         }
+        //-----TIMELINE-----
+        
         @Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -178,27 +289,42 @@ public class NewJFrame extends javax.swing.JFrame {
                 {
                     Color [][] bittable;
                     
-                    System.out.println("C M "+sheet.cloth_making);
                     if(cloth_making==false)
                     {
-                        bittable = animations.get(current_animation).model.get(current_frame).clone();
-                        System.out.println("-----------------------------------");
-                        for(int i=0; i<bittable.length; i++)
+                        if(previous.isSelected() && current_frame-1>=0 && current_frame<animations.get(current_animation).model.size())
                         {
-                            for(int j=0; j<bittable[i].length;j++)
-                            {
-                                System.out.print(bittable[i][j]+" ");
-                            }
-                            System.out.println("");
+                                bittable = animations.get(current_animation).getModelColorTable(current_frame-1);
+                                for(int i=0;i<bittable.length;i++)
+                                {
+                                    for(int j=0; j<bittable[i].length;j++)
+                                    {
+                                        if(bittable[i][j]!=null)
+                                            bittable[i][j]=new Color(bittable[i][j].getRed(), bittable[i][j].getGreen(),bittable[i][j].getBlue(), 100);
+                                    }
+                                }
+                                Color[][] tmp_col=animations.get(current_animation).getModelColorTable(current_frame);
+                                for(int i=0; i<bittable.length;i++)
+                                {
+                                    for(int j=0; j<bittable[i].length;j++)
+                                    {                                    
+                                        if(tmp_col[i][j]!=bittable[i][j] && tmp_col[i][j]!=null)
+                                        {                                        
+                                            bittable[i][j]=tmp_col[i][j];
+                                        }
+                                    }                                
+                                }
+                        }else
+                        {
+                            bittable = animations.get(current_animation).getModelColorTable(current_frame);
                         }
-                        System.out.println("-----------------------------------");
+                        
                         
                     }else
                     {
                         if(show_model==true)
                         {
-                            bittable = animations.get(current_animation).model.get(current_frame).clone();
-                            Color[][] tmp_col=animations.get(current_animation).clothing.get(current_cloth).cloth.get(current_frame).clone();
+                            bittable = animations.get(current_animation).getModelColorTable(current_frame);
+                            Color[][] tmp_col=animations.get(current_animation).clothing.get(current_cloth).getClothColorTable(current_frame);
                             for(int i=0; i<bittable.length;i++)
                             {
                                 for(int j=0; j<bittable[i].length;j++)
@@ -231,7 +357,7 @@ public class NewJFrame extends javax.swing.JFrame {
                         }
                         else
                         {
-                            bittable=animations.get(current_animation).clothing.get(current_cloth).cloth.get(current_frame).clone();
+                            bittable=animations.get(current_animation).clothing.get(current_cloth).getClothColorTable(current_frame);
                         }
                         
                         
@@ -266,14 +392,13 @@ public class NewJFrame extends javax.swing.JFrame {
 	}
     }
     Sheet sheet = new Sheet(40,40);
+    Timeline tl = new Timeline();
     private void initializeWorkingArea()
     {
         workingarea.setBackground(new Color(100,100,100));//tworzenie tla
         
-        sheet.addPixel(20, 30, new Color(255,0,0));
         requestFocus();
-    }
-    
+    }    
 
     /**
      * Creates new form NewJFrame
@@ -308,14 +433,13 @@ public class NewJFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         timeline = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        animation_timeline = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        animation_timeline = tl;
         jButton14 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        previous = new javax.swing.JCheckBox();
+        jButton22 = new javax.swing.JButton();
         toolbox = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -452,25 +576,26 @@ public class NewJFrame extends javax.swing.JFrame {
 
         timeline.setBackground(new java.awt.Color(102, 102, 255));
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        animation_timeline.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                animation_timelineMouseMoved(evt);
+            }
         });
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList1.setLayoutOrientation(javax.swing.JList.HORIZONTAL_WRAP);
-        jList1.setVisibleRowCount(1);
-        jScrollPane2.setViewportView(jList1);
+        animation_timeline.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                animation_timelineMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout animation_timelineLayout = new javax.swing.GroupLayout(animation_timeline);
         animation_timeline.setLayout(animation_timelineLayout);
         animation_timelineLayout.setHorizontalGroup(
             animation_timelineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
+            .addGap(0, 715, Short.MAX_VALUE)
         );
         animation_timelineLayout.setVerticalGroup(
             animation_timelineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+            .addGap(0, 141, Short.MAX_VALUE)
         );
 
         jScrollPane3.setViewportView(animation_timeline);
@@ -488,8 +613,15 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jButton17.setText(">");
 
-        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jCheckBox1.setText("Pokaż poprzednią");
+        previous.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        previous.setText("Pokaż poprzednią");
+        previous.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousActionPerformed(evt);
+            }
+        });
+
+        jButton22.setText("Duplikuj");
 
         javax.swing.GroupLayout timelineLayout = new javax.swing.GroupLayout(timeline);
         timeline.setLayout(timelineLayout);
@@ -498,34 +630,37 @@ public class NewJFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, timelineLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(timelineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(previous, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(timelineLayout.createSequentialGroup()
+                        .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(timelineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButton22, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, timelineLayout.createSequentialGroup()
-                            .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton14, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3)
-                .addContainerGap())
+                .addGap(9, 9, 9))
         );
         timelineLayout.setVerticalGroup(
             timelineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(timelineLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(timelineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
                     .addGroup(timelineLayout.createSequentialGroup()
                         .addComponent(jButton14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton15)
+                        .addComponent(jButton22)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(timelineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton16)
-                            .addComponent(jButton17))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3))
+                        .addComponent(jButton15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(timelineLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton17)
+                            .addComponent(jButton16))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(previous, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -650,7 +785,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addComponent(color2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         layers.setBackground(new java.awt.Color(51, 255, 102));
@@ -761,7 +896,7 @@ public class NewJFrame extends javax.swing.JFrame {
             .addGroup(layersLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(155, Short.MAX_VALUE))
         );
 
         workingarea.setFocusCycleRoot(true);
@@ -808,7 +943,7 @@ public class NewJFrame extends javax.swing.JFrame {
         );
         workingareaLayout.setVerticalGroup(
             workingareaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 520, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         lupa_val.setText("0");
@@ -896,15 +1031,15 @@ public class NewJFrame extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(layers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(toolbox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(workingarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(toolbox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(layers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(timeline, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(timeline, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         workingarea.getAccessibleContext().setAccessibleName("");
@@ -991,7 +1126,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private void workingareaComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_workingareaComponentResized
         // TODO add your handling code here:
         Insets ins = this.getInsets();
-        System.out.println(ins.right);
+        //System.out.println(ins.right);
         int x=(this.getSize().width-ins.right-ins.left)/3;
         int y=(this.getSize().height/3)-(sheet.h);
         sheet.setX(x);
@@ -1005,6 +1140,19 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // TODO add your handling code here:
+        if(sheet.animations.size()>0)
+        {
+            if(sheet.animations.get(sheet.current_animation)!=null)
+            {
+                sheet.animations.get(sheet.current_animation).model.add(new Color[sheet.w][sheet.h]);
+                for(int i=0; i<sheet.animations.get(sheet.current_animation).clothing.size(); i++)
+                {
+                    sheet.animations.get(sheet.current_animation).clothing.get(i).cloth.add(new Color[sheet.w][sheet.h]);
+                }
+                sheet.repaint();
+                tl.repaint();
+            }
+        }
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void workingareaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_workingareaKeyTyped
@@ -1013,22 +1161,22 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void workingareaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_workingareaKeyPressed
         // TODO add your handling code here:
-        System.out.println(evt.getKeyCode());
+        //System.out.println(evt.getKeyCode());
         if(evt.getKeyCode()==38)
-        {
-            sheet.y--;
-            sheet.repaint();
-        }else if(evt.getKeyCode()==40)
         {
             sheet.y++;
             sheet.repaint();
+        }else if(evt.getKeyCode()==40)
+        {
+            sheet.y--;
+            sheet.repaint();
         }else if(evt.getKeyCode()==37)
         {
-            sheet.x--;
+            sheet.x++;
             sheet.repaint();
         }else if(evt.getKeyCode()==39)
         {
-            sheet.x++;
+            sheet.x--;
             sheet.repaint();
         }
     }//GEN-LAST:event_workingareaKeyPressed
@@ -1185,17 +1333,23 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void mod_ubActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mod_ubActionPerformed
         // TODO add your handling code here:
-        if(mod_ub.getText().equals("Model"))
+        if(!sheet.animations.isEmpty())
         {
-            sheet.cloth_making=true;
-            mod_ub.setText("Ubiór");
-        }
-        else
-        {
-            sheet.cloth_making=false;
-            mod_ub.setText("Model");
-        }
-        sheet.repaint();
+            if(mod_ub.getText().equals("Model"))
+            {
+                if(!sheet.animations.get(sheet.current_animation).clothing.isEmpty())
+                {
+                    sheet.cloth_making=true;
+                    mod_ub.setText("Ubiór");
+                }            
+            }
+            else
+            {
+                sheet.cloth_making=false;
+                mod_ub.setText("Model");
+            }
+            sheet.repaint();
+        }    
     }//GEN-LAST:event_mod_ubActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -1238,8 +1392,19 @@ public class NewJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(anim_list.getSelectedValue()!=null)
         {
-            sheet.selectAnimation(anim_list.getSelectedValue());
+            sheet.selectAnimation(anim_list.getSelectedValue());            
+            DefaultListModel c_l_m = new DefaultListModel();
+            for(int i=0; i<sheet.animations.get(sheet.current_animation).clothing.size();i++)
+            {
+                c_l_m.addElement(sheet.animations.get(sheet.current_animation).clothing.get(i).name);
+            }
+            if(!mod_ub.getText().equals("Model"))
+            {
+                mod_ub.doClick();
+            }
+            cloth_list.setModel(c_l_m);
             sheet.repaint();
+            tl.repaint();
         }
         
     }//GEN-LAST:event_anim_listMouseClicked
@@ -1249,6 +1414,7 @@ public class NewJFrame extends javax.swing.JFrame {
         if(cloth_list.getSelectedValue()!=null)
         {
             sheet.selectClothing(cloth_list.getSelectedValue());
+            sheet.animations.get(sheet.current_animation).clothing.get(sheet.current_cloth).cloth.add(new Color[sheet.w][sheet.h]);
             sheet.repaint();
         }
     }//GEN-LAST:event_cloth_listMouseClicked
@@ -1287,6 +1453,41 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jButton20ActionPerformed
+
+    private void animation_timelineMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_animation_timelineMouseMoved
+        // TODO add your handling code here:
+        
+        
+    }//GEN-LAST:event_animation_timelineMouseMoved
+
+    private void animation_timelineMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_animation_timelineMouseClicked
+        // TODO add your handling code here:
+        tl.current_frame=-1;
+        for(int i=tl.from_frame; i<tl.il+tl.from_frame; i++)
+        {
+            int x1=getSize().width/tl.il*i;
+            int x2=x1+getSize().width/tl.il;
+            if(evt.getX()>=x1 && evt.getX()<x2)
+            {
+                if(sheet.animations.size()>sheet.current_animation)
+                    if(i<sheet.animations.get(sheet.current_animation).model.size())
+                    {
+                        //tl.current_frame=i;
+                        sheet.current_frame=i;
+                        tl.repaint();
+                        sheet.repaint();
+                        System.out.println("Działa "+sheet.current_frame);
+                    }
+                
+                break;
+            }
+        }
+    }//GEN-LAST:event_animation_timelineMouseClicked
+
+    private void previousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousActionPerformed
+        // TODO add your handling code here:
+        sheet.repaint();
+    }//GEN-LAST:event_previousActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1343,6 +1544,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
+    private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -1350,7 +1552,6 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -1359,7 +1560,6 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -1373,7 +1573,6 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
@@ -1382,6 +1581,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel layers;
     private javax.swing.JLabel lupa_val;
     private javax.swing.JButton mod_ub;
+    private javax.swing.JCheckBox previous;
     private javax.swing.JFrame sheetoptionframe;
     private javax.swing.JPanel timeline;
     private javax.swing.JPanel toolbox;
